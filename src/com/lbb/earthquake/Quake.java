@@ -3,6 +3,7 @@
  */
 package com.lbb.earthquake;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import android.location.Location;
 
@@ -84,4 +85,15 @@ public class Quake {
 	public Location getLocation() {
 		return location;
 	}
+
+	@Override
+	public String toString() {
+		SimpleDateFormat sdf = new SimpleDateFormat();
+		String dateString = sdf.format(date);
+		return dateString
+			+ ": " + magnitude
+			+ ": " + details;
+	}
+	
+	
 }
