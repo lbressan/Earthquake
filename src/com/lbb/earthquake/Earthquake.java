@@ -128,7 +128,7 @@ public class Earthquake extends Activity {
 						}
 						
 						// Location
-						double elevation = Double.parseDouble(el.getNodeValue()); 
+						double elevation = Double.parseDouble(el.getFirstChild().getNodeValue()); 
 						String point = g.getFirstChild().getNodeValue();
 						String[] location = point.split(" ");
 						Location l = new Location("dummyGps");
@@ -164,9 +164,12 @@ public class Earthquake extends Activity {
     
     /**
      * Add a new quake to the list
-     * @param quake - the quake object to add
+     * @param Quake quake - the quake object to add
      */
     private void addNewQuake(Quake quake) {
-    	
+    	// add the new quake to the array list
+    	earthquakes.add(quake);
+    	// notify the array adapter of the changes
+    	aa.notifyDataSetChanged();
     }
 }
