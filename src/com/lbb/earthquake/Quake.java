@@ -36,11 +36,11 @@ public class Quake {
 	
 	/**
 	 * Constructor of a Quake object
-	 * @param date - the Earthquake date
-	 * @param magnitude - the Earthquake magnitude
-	 * @param details - the Earthquake details
-	 * @param link - the Earthquake link
-	 * @param location - the Earthquake location
+	 * @param Date date - the Earthquake date
+	 * @param Double magnitude - the Earthquake magnitude
+	 * @param String details - the Earthquake details
+	 * @param String link - the Earthquake link
+	 * @param Location location - the Earthquake location
 	 */
 	public Quake(Date date, double magnitude, 
 			String details, String link, Location location) {
