@@ -21,6 +21,7 @@ public final class R {
     }
     public static final class string {
         public static final int app_name=0x7f040000;
+        public static final int menu_update=0x7f040002;
         public static final int quake_feed=0x7f040001;
     }
 }

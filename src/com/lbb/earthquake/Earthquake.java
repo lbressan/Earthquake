@@ -24,6 +24,8 @@ import org.xml.sax.SAXException;
 import android.app.Activity;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -33,6 +35,10 @@ import android.widget.ListView;
  */
 public class Earthquake extends Activity {
 	
+	/**
+	 * Menu update entry
+	 */
+	private static final int MENU_UPDATE = 1;
 	
 	/**
 	 * xml constants 
@@ -77,7 +83,25 @@ public class Earthquake extends Activity {
         refreshEarthquakes();
     }
     
-    /**
+    @Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		menu.add(0, MENU_UPDATE, Menu.NONE, R.string.menu_update);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		super.onOptionsItemSelected(item);
+		switch (item.getItemId()) {
+		case MENU_UPDATE:
+			refreshEarthquakes();
+			return true;
+		}
+		return false;
+	}
+
+	/**
      * Refresh Earthquakes getting and parsing the xml feed
      */
     private void refreshEarthquakes(){
