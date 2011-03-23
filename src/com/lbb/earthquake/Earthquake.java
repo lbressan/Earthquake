@@ -22,12 +22,19 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
 /**
  * @author Leonardo Bressan
@@ -39,6 +46,10 @@ public class Earthquake extends Activity {
 	 * Menu update entry
 	 */
 	private static final int MENU_UPDATE = 1;
+	
+	private static final int QUAKE_DIALOG = 1;
+	
+	Quake selectedQuake;
 	
 	/**
 	 * xml constants 
@@ -75,6 +86,18 @@ public class Earthquake extends Activity {
         setContentView(R.layout.main);
         
         earthquakeListView = (ListView) this.findViewById(R.id.earthquakeListView);
+        
+        earthquakeListView.setOnItemClickListener(
+        		new OnItemClickListener() {
+        			@Override
+        			public void onItemClick(AdapterView<?> av, View v, int index,
+        					long longArg) {
+        					selectedQuake = earthquakes.get(index);
+        					showDialog(QUAKE_DIALOG);
+        			}
+        		}
+        	);
+        
         int layoutID = android.R.layout.simple_list_item_1;
         aa = new ArrayAdapter<Quake>(this, layoutID, earthquakes);
         earthquakeListView.setAdapter(aa);
@@ -83,7 +106,43 @@ public class Earthquake extends Activity {
         refreshEarthquakes();
     }
     
+    
+    
     @Override
+	protected Dialog onCreateDialog(int id) {
+		super.onCreateDialog(id);
+		switch (id) {
+		case QUAKE_DIALOG:
+			LayoutInflater li = LayoutInflater.from(this);
+			View quakeDetailsView = li.inflate(R.layout.quake_details, null);
+			
+			AlertDialog.Builder quakeDialog = new AlertDialog.Builder(this);
+			quakeDialog.setTitle("Quake time");
+			quakeDialog.setView(quakeDetailsView);
+			return quakeDialog.create();
+		}
+		return null;
+	}
+
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog) {
+		switch (id) {
+		case QUAKE_DIALOG:
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyy HH:mm:ss");
+			String dateString = sdf.format(selectedQuake.getDate());
+			String quakeText = selectedQuake.getQuakeTextForQuakeDialog();
+			AlertDialog quakeDialog = (AlertDialog) dialog;
+			quakeDialog.setTitle(dateString);
+			TextView tv = (TextView) quakeDialog.findViewById(R.id.quakeDetailsTextView);
+			tv.setText(quakeText);
+			break;
+		}
+		
+	}
+
+
+
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, MENU_UPDATE, Menu.NONE, R.string.menu_update);
