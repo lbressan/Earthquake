@@ -95,5 +95,12 @@ public class Quake {
 			+ ": " + details;
 	}
 	
+	/**
+	 * @return
+	 */
+	public String getQuakeTextForQuakeDialog() {
+		return "Magnitude " + magnitude + "\n" + details + "\n"	+ link;
+	}
+	
 	
 }
