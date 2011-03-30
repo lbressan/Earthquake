@@ -45,8 +45,16 @@ public class Earthquake extends Activity {
 	/**
 	 * Menu update entry
 	 */
-	private static final int MENU_UPDATE = 1;
+	private static final int MENU_UPDATE = Menu.FIRST;
 	
+	/**
+	 * Menu clear entry
+	 */
+	private static final int MENU_CLEAR = Menu.FIRST + 1;
+	
+	/**
+	 * Earthquake details dialog
+	 */
 	private static final int QUAKE_DIALOG = 1;
 	
 	Quake selectedQuake;
@@ -140,12 +148,11 @@ public class Earthquake extends Activity {
 		
 	}
 
-
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, MENU_UPDATE, Menu.NONE, R.string.menu_update);
+		menu.add(0,MENU_CLEAR,Menu.NONE,R.string.menu_clear);
 		return true;
 	}
 
@@ -156,8 +163,16 @@ public class Earthquake extends Activity {
 		case MENU_UPDATE:
 			refreshEarthquakes();
 			return true;
+		case MENU_CLEAR:
+			clearEarthquakes();
+			return true;
 		}
 		return false;
+	}
+	
+	private void clearEarthquakes() {
+		earthquakes.clear();
+		aa.notifyDataSetChanged();
 	}
 
 	/**
