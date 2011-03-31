@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Earthquake</string>
-    <string name="quake_feed">
+    <string name="app_preferences">Earthquake preferences</string>
+    <string name="quake_feed_m2.5">
     	http://earthquake.usgs.gov/eqcenter/catalogs/1day-M2.5.xml
+    </string>
+    <string name="quake_feed_m1">
+    	http://earthquake.usgs.gov/eqcenter/catalogs/1day-M1.xml
     </string>
     <string name="menu_update">
     	Refresh Earthquakes
     </string>
     <string name="menu_clear">
     	Clear list
+    </string>
+    <string name="menu_preferences">
+    	Preferences
     </string>
 </resources>
