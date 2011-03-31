@@ -24,6 +24,7 @@ import org.xml.sax.SAXException;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -51,6 +52,16 @@ public class Earthquake extends Activity {
 	 * Menu clear entry
 	 */
 	private static final int MENU_CLEAR = Menu.FIRST + 1;
+	
+	/**
+	 * Menu preferences 
+	 */
+	private static final int MENU_PREFERENCES = Menu.FIRST +2;
+	
+	/**
+     * Preferences activity request code
+     */
+    private static final int SHOW_PREFERENCES = 1;
 	
 	/**
 	 * Earthquake details dialog
@@ -153,6 +164,7 @@ public class Earthquake extends Activity {
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, MENU_UPDATE, Menu.NONE, R.string.menu_update);
 		menu.add(0,MENU_CLEAR,Menu.NONE,R.string.menu_clear);
+		menu.add(0,MENU_PREFERENCES,Menu.NONE,R.string.menu_preferences);
 		return true;
 	}
 
@@ -166,8 +178,19 @@ public class Earthquake extends Activity {
 		case MENU_CLEAR:
 			clearEarthquakes();
 			return true;
+		case MENU_PREFERENCES:
+			showPreferences();
+			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * Show preferences activity
+	 */
+	private void showPreferences() {
+		Intent i = new Intent(this, Preferences.class);
+		startActivityForResult(i, SHOW_PREFERENCES);
 	}
 	
 	private void clearEarthquakes() {
@@ -182,7 +205,7 @@ public class Earthquake extends Activity {
     	URL url;
     	try {
     		// Get the quake feed url
-        	String quakeFeed = getString(R.string.quake_feed);
+        	String quakeFeed = getString(R.string.quake_feed_m2_5);
         	url = new URL(quakeFeed);
         	URLConnection connection;
         	connection = url.openConnection();
