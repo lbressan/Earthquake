@@ -21,12 +21,17 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+import android.R.string;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.location.Location;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,7 +46,7 @@ import android.widget.AdapterView.OnItemClickListener;
  * @author Leonardo Bressan
  *
  */
-public class Earthquake extends Activity {
+public class Earthquake extends Activity implements OnSharedPreferenceChangeListener{
 	
 	/**
 	 * Menu update entry
@@ -82,6 +87,14 @@ public class Earthquake extends Activity {
 	private static final String FEED_XML_LINK_HREF_TAG = "href";
 	private static final String FEED_XML_DATE_FORMAT = "yyyy-MM-dd'T'hh:mm:ss'Z'";
 	
+	/**
+	 * Preference constants
+	 */
+	private int minimumMagnitude = 0;
+	private boolean autoUpdate = false;
+	private int updateFrequecy = 0;
+	private String feedUrl = getString(R.string.quake_feed_m2_5);
+	
 	
 	/**
 	 * Reference to the list view
@@ -121,11 +134,26 @@ public class Earthquake extends Activity {
         aa = new ArrayAdapter<Quake>(this, layoutID, earthquakes);
         earthquakeListView.setAdapter(aa);
         
+        // Update variables with preferences
+        updateFromPreferences();
+        
         // Call refresh earthquake method
         refreshEarthquakes();
     }
     
     
+    /**
+     * Update global class variable when the user close the preferences activity
+     */
+	private void updateFromPreferences() {
+			Context context = getApplicationContext();
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+			minimumMagnitude = Integer.parseInt(prefs.getString(Preferences.PREF_MIN_MAG, "0"));
+			updateFrequecy = Integer.parseInt(prefs.getString(Preferences.PREF_UPDATE_FREQ, "0"));
+			autoUpdate = prefs.getBoolean(Preferences.PREF_AUTO_UPDATE, false);
+			feedUrl = prefs.getString(Preferences.PREF_FEED_SOURCE_URL,"");
+			prefs.registerOnSharedPreferenceChangeListener(this);
+	}
     
     @Override
 	protected Dialog onCreateDialog(int id) {
@@ -205,7 +233,7 @@ public class Earthquake extends Activity {
     	URL url;
     	try {
     		// Get the quake feed url
-        	String quakeFeed = getString(R.string.quake_feed_m2_5);
+        	String quakeFeed = feedUrl;
         	url = new URL(quakeFeed);
         	URLConnection connection;
         	connection = url.openConnection();
@@ -288,9 +316,29 @@ public class Earthquake extends Activity {
      * @param Quake quake - the quake object to add
      */
     private void addNewQuake(Quake quake) {
-    	// add the new quake to the array list
-    	earthquakes.add(quake);
-    	// notify the array adapter of the changes
-    	aa.notifyDataSetChanged();
+    	// check the minimum magnitude preference
+    	if (quake.getMagnitude() >= minimumMagnitude) {
+        	// add the new quake to the array list
+        	earthquakes.add(quake);
+        	// notify the array adapter of the changes
+        	aa.notifyDataSetChanged();	
+		}
     }
+
+    /**
+     * Called when Preferences changes
+     */
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+			String key) {
+		if (key.equals(Preferences.PREF_AUTO_UPDATE)) {
+			autoUpdate = sharedPreferences.getBoolean(Preferences.PREF_AUTO_UPDATE, false);
+		} else if (key.equals(Preferences.PREF_FEED_SOURCE_URL)) {
+			feedUrl = sharedPreferences.getString(Preferences.PREF_FEED_SOURCE_URL,"");
+		} else if (key.equals(Preferences.PREF_MIN_MAG)) {
+			minimumMagnitude = Integer.parseInt(sharedPreferences.getString(Preferences.PREF_MIN_MAG, "0"));
+		} else if (key.equals(Preferences.PREF_UPDATE_FREQ)) {
+			updateFrequecy = Integer.parseInt(sharedPreferences.getString(Preferences.PREF_UPDATE_FREQ, "0"));
+		}
+	}
 }
