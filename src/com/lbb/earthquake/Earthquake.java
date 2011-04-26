@@ -21,7 +21,6 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import android.R.string;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -93,7 +92,7 @@ public class Earthquake extends Activity implements OnSharedPreferenceChangeList
 	private int minimumMagnitude = 0;
 	private boolean autoUpdate = false;
 	private int updateFrequecy = 0;
-	private String feedUrl = getString(R.string.quake_feed_m2_5);
+	private String feedUrl = "";
 	
 	
 	/**
@@ -151,7 +150,7 @@ public class Earthquake extends Activity implements OnSharedPreferenceChangeList
 			minimumMagnitude = Integer.parseInt(prefs.getString(Preferences.PREF_MIN_MAG, "0"));
 			updateFrequecy = Integer.parseInt(prefs.getString(Preferences.PREF_UPDATE_FREQ, "0"));
 			autoUpdate = prefs.getBoolean(Preferences.PREF_AUTO_UPDATE, false);
-			feedUrl = prefs.getString(Preferences.PREF_FEED_SOURCE_URL,"");
+			feedUrl = prefs.getString(Preferences.PREF_FEED_SOURCE_URL,getString(R.string.quake_feed_m2_5));
 			prefs.registerOnSharedPreferenceChangeListener(this);
 	}
     
@@ -221,6 +220,17 @@ public class Earthquake extends Activity implements OnSharedPreferenceChangeList
 		startActivityForResult(i, SHOW_PREFERENCES);
 	}
 	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (requestCode) {
+		case SHOW_PREFERENCES:
+			refreshEarthquakes();
+			break;
+		}
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+
 	private void clearEarthquakes() {
 		earthquakes.clear();
 		aa.notifyDataSetChanged();
@@ -329,16 +339,16 @@ public class Earthquake extends Activity implements OnSharedPreferenceChangeList
      * Called when Preferences changes
      */
 	@Override
-	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+	public void onSharedPreferenceChanged(SharedPreferences prefs,
 			String key) {
 		if (key.equals(Preferences.PREF_AUTO_UPDATE)) {
-			autoUpdate = sharedPreferences.getBoolean(Preferences.PREF_AUTO_UPDATE, false);
+			autoUpdate = prefs.getBoolean(Preferences.PREF_AUTO_UPDATE, false);
 		} else if (key.equals(Preferences.PREF_FEED_SOURCE_URL)) {
-			feedUrl = sharedPreferences.getString(Preferences.PREF_FEED_SOURCE_URL,"");
+			feedUrl = prefs.getString(Preferences.PREF_FEED_SOURCE_URL,"");
 		} else if (key.equals(Preferences.PREF_MIN_MAG)) {
-			minimumMagnitude = Integer.parseInt(sharedPreferences.getString(Preferences.PREF_MIN_MAG, "0"));
+			minimumMagnitude = Integer.parseInt(prefs.getString(Preferences.PREF_MIN_MAG, "0"));
 		} else if (key.equals(Preferences.PREF_UPDATE_FREQ)) {
-			updateFrequecy = Integer.parseInt(sharedPreferences.getString(Preferences.PREF_UPDATE_FREQ, "0"));
+			updateFrequecy = Integer.parseInt(prefs.getString(Preferences.PREF_UPDATE_FREQ, "0"));
 		}
 	}
 }
